@@ -7,7 +7,7 @@
 struct Heap {
 	int max_size;
 	int allocated_memory;
-	int free_size;
+	int free_memory;
 
 	int *start_pointer;
 	int *bump_pointer;
@@ -15,23 +15,26 @@ struct Heap {
 };
 
 void print_size(struct Heap* heap) {
-	if (!heap || !(heap -> start_pointer) || !(heap -> end_pointer) || !(heap -> bump_pointer)) return;
+	if (!heap) return;
 	printf("Allocation size = %d\n", heap -> allocated_memory);
-	printf("Free size = %d\n", heap -> free_size);
+	printf("Free size = %d\n", heap -> free_memory);
 	printf("==============================================================================================\n");
 }
 
-void check2power(UL n) {
-	if (n && !(n & (n - 1))) {}
+/*
+	Number should be power of 2 and >= 1024 and <= 8192 bytes
+*/
+void validateMaxMemory(UL n) {
+	if (n >= 1024 && n <= 8192 && (n && !(n & (n - 1)))) {}
 	else {
-		printf("Entered size should be power of 2!\n");
+		printf("Entered size should be power of 2 and >= 1024 and <= 8192 !\n");
 		exit(1);
 	}
 }
 
 struct Heap *create_heap(UL max_size) {
 
-	check2power(max_size);
+	validateMaxMemory(max_size);
 
 	struct Heap* newHeap = (struct Heap *) malloc(sizeof(struct Heap));
 
@@ -40,17 +43,17 @@ struct Heap *create_heap(UL max_size) {
 	newHeap -> bump_pointer = newHeap -> start_pointer;
 
 	newHeap -> max_size = max_size;
-	newHeap -> free_size = newHeap -> end_pointer - newHeap -> bump_pointer;
+	newHeap -> free_memory = newHeap -> end_pointer - newHeap -> bump_pointer;
 	newHeap -> allocated_memory = 0;
 
-	if (newHeap) {
-		printf("Heap creation successful of size %d !\n", newHeap -> max_size);
-		print_size(newHeap);
-		return newHeap;
-	} else {
+	if (!newHeap) {
 		printf("Heap creation failed!");
 		exit(1);
 	}
+	
+	printf("Heap creation successful of size %d !\n", newHeap -> max_size);
+	print_size(newHeap);
+	return newHeap;
 }
 
 void heap_memory_allocate(struct Heap* heap, UL allocation_size) {
@@ -62,15 +65,15 @@ void heap_memory_allocate(struct Heap* heap, UL allocation_size) {
 
 	heap -> bump_pointer = heap -> start_pointer + allocation_size;
 	heap -> allocated_memory = heap -> bump_pointer - heap -> start_pointer;
-	heap -> free_size = heap -> end_pointer - heap -> bump_pointer;
+	heap -> free_memory = heap -> end_pointer - heap -> bump_pointer;
 
-	if (heap -> bump_pointer) {
-		printf("Heap allocation successful of size %d !\n", heap -> allocated_memory);
-		print_size(heap);
-	} else {
+	if (!(heap -> bump_pointer)) {
 		printf("Heap creation failed!");
 		exit(1);
 	}
+	
+	printf("Heap allocation successful of size %d !\n", heap -> allocated_memory);
+	print_size(heap);
 
 }
 
@@ -83,20 +86,23 @@ void clear_heap(struct Heap *heap) {
 
 	heap -> bump_pointer = heap -> start_pointer;
 	heap -> allocated_memory = 0;
-	heap -> free_size = heap -> max_size;
+	heap -> free_memory = heap -> max_size;
 
 	printf("Heap clear successful!\n");
 	print_size(heap);
 }
 
 void destroy_heap(struct Heap *heap) {
-	if (heap && heap -> start_pointer) {
-		free(heap -> start_pointer);
-		free(heap);
-		printf("Heap destroy successful!\n");
-		printf("==============================================================================================\n");
-	} else {
+
+	if (!heap || !(heap -> start_pointer)) {
 		printf("Heap destroy failed ! \n");
+		return;
 	}
+
+	free(heap -> start_pointer);
+	free(heap);
+
+	printf("Heap destroy successful!\n");
+	printf("==============================================================================================\n");
 
 }
