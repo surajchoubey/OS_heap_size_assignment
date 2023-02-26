@@ -1,12 +1,14 @@
 
-output: main.o message.o
-	g++ main.o message.o -o output
+CC := "gcc"
 
-main.o: main.cpp
-	g++ -c main.cpp
+output: main.o heap_memory.o
+	${CC} main.o heap_memory.o -o make_heap
 
-message.o: message.cpp message.h
-	g++ -c message.cpp
+main.o: main.c
+	${CC} -c main.c
+
+heap_memory.o: heap_memory.c heap_memory.h
+	${CC} -c heap_memory.c
 
 clean:
 	rm *.o output
