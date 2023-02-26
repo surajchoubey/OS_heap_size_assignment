@@ -21,7 +21,17 @@ void print_size(struct Heap* heap) {
 	printf("==============================================================================================\n");
 }
 
+void check2power(UL n) {
+	if (n && !(n & (n - 1))) {}
+	else {
+		printf("Entered size should be power of 2!\n");
+		exit(1);
+	}
+}
+
 struct Heap *create_heap(UL max_size) {
+
+	check2power(max_size);
 
 	struct Heap* newHeap = (struct Heap *) malloc(sizeof(struct Heap));
 
