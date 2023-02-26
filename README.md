@@ -10,4 +10,4 @@
 
 ## on 4093 bytes
 
-![](images/4092.png)
+![](images/4093.png)
