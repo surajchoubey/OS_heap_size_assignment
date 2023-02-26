@@ -16,8 +16,8 @@ struct Heap {
 
 void print_size(struct Heap* heap) {
 	if (!heap || !(heap -> start_pointer) || !(heap -> end_pointer) || !(heap -> bump_pointer)) return;
-	printf("Allocation size = %ld\n", heap -> bump_pointer - heap -> start_pointer);
-	printf("Free size = %ld\n", heap -> end_pointer - heap -> bump_pointer);
+	printf("Allocation size = %d\n", heap -> allocated_memory);
+	printf("Free size = %d\n", heap -> free_size);
 	printf("==============================================================================================\n");
 }
 
@@ -27,14 +27,10 @@ struct Heap *create_heap(UL max_size) {
 
 	newHeap -> start_pointer = (int *) malloc(max_size); // instead of maxsize * sizeof(int)
 	newHeap -> end_pointer = newHeap -> start_pointer + max_size;
-
-	// storing max_size in int
-	newHeap -> max_size = max_size;
-	newHeap -> free_size = newHeap -> bump_pointer - newHeap -> start_pointer;
-
-	// assigning bump pointer at 0th int location obviously when initializing
-	// allocate 0 bytes
 	newHeap -> bump_pointer = newHeap -> start_pointer;
+
+	newHeap -> max_size = max_size;
+	newHeap -> free_size = newHeap -> end_pointer - newHeap -> bump_pointer;
 	newHeap -> allocated_memory = 0;
 
 	if (newHeap) {
@@ -54,9 +50,9 @@ void heap_memory_allocate(struct Heap* heap, UL allocation_size) {
 		exit(1);
 	}
 
-	heap -> bump_pointer = heap -> start_pointer + (allocation_size);
-	heap -> allocated_memory = allocation_size;
-	heap -> free_size = heap -> end_pointer - heap -> start_pointer;
+	heap -> bump_pointer = heap -> start_pointer + allocation_size;
+	heap -> allocated_memory = heap -> bump_pointer - heap -> start_pointer;
+	heap -> free_size = heap -> end_pointer - heap -> bump_pointer;
 
 	if (heap -> bump_pointer) {
 		printf("Heap allocation successful of size %d !\n", heap -> allocated_memory);
@@ -76,6 +72,8 @@ void clear_heap(struct Heap *heap) {
 	}
 
 	heap -> bump_pointer = heap -> start_pointer;
+	heap -> allocated_memory = 0;
+	heap -> free_size = heap -> max_size;
 
 	printf("Heap clear successful!\n");
 	print_size(heap);
