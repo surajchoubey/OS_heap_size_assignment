@@ -11,5 +11,5 @@ heap_memory.o: heap_memory.c heap_memory.h
 	${CC} -c heap_memory.c
 
 clean:
-	rm *.o output
+	rm *.o make_heap
 
