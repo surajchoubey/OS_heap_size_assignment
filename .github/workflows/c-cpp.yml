@@ -17,5 +17,9 @@ jobs:
       run: make
     - name: ./make_heap 4096
       run: ./make_heap 4096
+    - name: ./make_heap 8192
+      run: ./make_heap 8192  
+    - name: ./make_heap 4093
+      run: ./make_heap 4093
     - name: make clean
       run: make clean
